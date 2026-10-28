@@ -14,16 +14,18 @@ void showSplash(LGFX& lcd, const char* product, const char* subtitle);
 // A simple full-screen message (setup instructions, errors).
 void showMessage(LGFX& lcd, const char* title, const char* const lines[], int count);
 
-// Connect to Wi-Fi, opening a setup access point (apName, no password) with
-// instructions on screen if there are no saved credentials. `params` are extra
-// fields shown on the setup page (may be empty). Blocks until connected.
+// Connect to Wi-Fi. With no saved network, opens a setup access point (apName,
+// no password) with instructions on screen; its pages include /hardware.
+// Blocks until connected.
 void connectWifi(LGFX& lcd, WiFiManager& wm, const char* apName, const char* product);
 
 // mDNS name (http://<host>.local) and the address to show on screen.
 void startMdns(const char* host);
 String address();
 
-// BOOT button: call often. A 3-second hold forgets Wi-Fi and restarts into setup.
-void pollBootButton(LGFX& lcd, WiFiManager& wm);
+// BOOT button: call often. Held 3 s then released: forget Wi-Fi and restart
+// into setup. Held 10 s: restore the default display wiring and restart.
+// Returns true while it's held past 3 s and showing instructions (don't draw over them).
+bool pollBootButton(LGFX& lcd, WiFiManager& wm);
 
 }  // namespace device

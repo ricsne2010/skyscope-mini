@@ -3,6 +3,7 @@
 #include <ESPmDNS.h>
 #include <WiFi.h>
 
+#include "hardware.h"
 #include "logo.h"
 #include "scope.h"
 
@@ -61,6 +62,12 @@ void connectWifi(LGFX& lcd, WiFiManager& wm, const char* apName, const char* pro
   wm.setTitle(product);
   wm.setConfigPortalTimeout(0);  // stay in setup until someone completes it
   wm.setConnectTimeout(20);
+  // The display-wiring page is in the setup portal too: with the wrong pins the
+  // screen shows nothing, but the portal (hold BOOT 3 s) still works.
+  static const char* menu[] = {"wifi", "custom", "info", "restart"};
+  wm.setMenu(menu, 4);
+  wm.setCustomMenuHTML("<form action='/hardware' method='get'><button>Display hardware</button></form><br/>");
+  wm.setWebServerCallback([&wm] { hardware::addRoutes(*wm.server, prod.c_str()); });
   wm.setAPCallback([&lcd](WiFiManager*) {
     const String l1 = "1. On a phone, join the Wi-Fi network  " + ap;
     const char* lines[] = {
@@ -68,7 +75,7 @@ void connectWifi(LGFX& lcd, WiFiManager& wm, const char* apName, const char* pro
         l1.c_str(),
         "2. A setup page opens (or go to http://192.168.4.1)",
         "3. Choose your network, enter its password, Save",
-        "Hold BOOT for 3 seconds at any time to start setup again.",
+        "Hold BOOT 3 s to start setup again; 10 s restores the default pins.",
     };
     showMessage(lcd, (prod + " setup").c_str(), lines, 5);
   });
@@ -85,21 +92,40 @@ void startMdns(const char* host) {
 
 String address() { return WiFi.localIP().toString(); }
 
-void pollBootButton(LGFX& lcd, WiFiManager& wm) {
+bool pollBootButton(LGFX& lcd, WiFiManager& wm) {
   static unsigned long downSince = 0;
+  static bool told = false;
   pinMode(board::kBootPin, INPUT_PULLUP);
+  const unsigned long held = downSince ? millis() - downSince : 0;
   if (digitalRead(board::kBootPin) == LOW) {
     if (!downSince) downSince = millis();
-    if (millis() - downSince > 3000) {
-      const char* lines[] = {"Forgetting this Wi-Fi network...", "The display restarts into setup."};
-      showMessage(lcd, "Wi-Fi reset", lines, 2);
-      wm.resetSettings();
+    if (held > 10000) {
+      const char* lines[] = {"Restoring the default display wiring...", "The display restarts."};
+      showMessage(lcd, "Display reset", lines, 2);
+      hardware::clear();
       delay(1500);
       ESP.restart();
     }
-  } else {
-    downSince = 0;
+    if (held > 3000 && !told) {
+      told = true;
+      const char* lines[] = {"Let go now to forget this Wi-Fi network",
+                             "and start Wi-Fi setup.",
+                             "Keep holding to 10 seconds to restore the",
+                             "display's default wiring (pins) instead."};
+      showMessage(lcd, "BOOT button", lines, 4);
+    }
+    return held > 3000;
   }
+  if (held > 3000) {  // released between 3 and 10 seconds
+    const char* lines[] = {"Forgetting this Wi-Fi network...", "The display restarts into setup."};
+    showMessage(lcd, "Wi-Fi reset", lines, 2);
+    wm.resetSettings();
+    delay(1500);
+    ESP.restart();
+  }
+  downSince = 0;
+  told = false;
+  return false;
 }
 
 }  // namespace device

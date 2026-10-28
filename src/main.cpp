@@ -16,11 +16,12 @@
 
 #include "board.h"
 #include "device.h"
+#include "hardware.h"
 #include "logo.h"
 #include "mini.h"
 #include "render.h"
 
-#define SKYSCOPE_MINI_VERSION "1.0.0"
+#define SKYSCOPE_MINI_VERSION "1.1.0"
 
 namespace {
 
@@ -137,7 +138,7 @@ void handleRoot() {
          "filters, emergency alerts and major-airport runways.</p><p class=dim>Version " SKYSCOPE_MINI_VERSION " &middot; ");
   p += esc(String(g_mdnsName) + ".local (" + device::address() + ")");
   p += F("</p><p><a href='https://github.com/ricsne2010/skyscope-mini'>github.com/ricsne2010/skyscope-mini</a></p>"
-         "<p class=dim>Hold the BOOT button for 3 seconds to set up Wi-Fi again. Aircraft data: adsb.fi. Grew out of "
+         "<p class=dim>Hold the BOOT button for 3 seconds to set up Wi-Fi again (10 seconds restores the default display wiring). Board wired differently? <a href='/hardware'>Display hardware (pins)</a>. Aircraft data: adsb.fi. Grew out of "
          "ESP32-Plane-Radar by MatixYo (MIT). Not for navigation.</p></section></main></body></html>");
   server.send(200, "text/html", p);
 }
@@ -195,6 +196,7 @@ void handleLogo() {
 
 void setup() {
   Serial.begin(115200);
+  lcd.configure(hardware::load());  // the wiring saved on /hardware, or the default
   lcd.init();
   lcd.setBrightness(255);
   scope::color::init();
@@ -208,6 +210,7 @@ void setup() {
   server.on("/", HTTP_GET, handleRoot);
   server.on("/save", HTTP_POST, handleSave);
   server.on("/logo.jpg", HTTP_GET, handleLogo);
+  hardware::addRoutes(server, kProduct);
   server.begin();
 
   frame.setPsram(true);
@@ -226,7 +229,7 @@ void setup() {
 void loop() {
   static unsigned long last = 0;
   server.handleClient();
-  device::pollBootButton(lcd, wm);
+  if (device::pollBootButton(lcd, wm)) return;  // its instructions are on screen
   handleTouch();
   if (millis() - last >= kFrameMs) {
     last = millis();

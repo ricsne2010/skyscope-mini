@@ -73,7 +73,7 @@
   <p class="lede">A small standalone aircraft radar on a 4.3-inch ESP32-S3 display. No Raspberry Pi needed.</p>
   <figure><img src="images/screen.png" alt="SkyScope Mini screen">
     <figcaption>SkyScope Mini centred on Phoenix Sky Harbor at 25 miles.</figcaption></figure>
-  <p class="meta">Version 1.0.0 · Project: <a href="https://github.com/ricsne2010/skyscope-mini">github.com/ricsne2010/skyscope-mini</a> · Licence: MIT · Not for navigation.
+  <p class="meta">Version 1.1.0 · Project: <a href="https://github.com/ricsne2010/skyscope-mini">github.com/ricsne2010/skyscope-mini</a> · Licence: MIT · Not for navigation.
     <span class="no-print"> · <a href="SkyScope-Mini-Guide.pdf">Download this guide as a PDF</a></span></p>
 </section>
 
@@ -87,6 +87,7 @@
   <li><a href="#screen">Reading the screen</a></li>
   <li><a href="#touch">Touch controls</a></li>
   <li><a href="#page">The settings page</a></li>
+  <li><a href="#hardware">Display hardware (pins)</a></li>
   <li><a href="#trouble">Troubleshooting</a></li>
   <li><a href="#source">Building from source</a></li>
   <li><a href="#credits">Credits and licence</a></li>
@@ -105,7 +106,7 @@
   <tr><td>Tap to select, −/+ range buttons, nearest-aircraft card, list, UTC clock</td><td>Browser radar, airspeed, full settings site</td></tr>
 </table>
 <p>If you already run SkyScope on a Pi and want the full picture on a small screen, use <a href="https://github.com/ricsne2010/skyscope-satellite">SkyScope Satellite</a> instead: it mirrors your SkyScope.</p>
-<div class="warn"><b>First release.</b> Version 1.0.0 builds cleanly and its screen has been checked with the same drawing code running on a computer (see <a href="#source">Building from source</a>), but it has not yet been run on the board itself. If anything doesn't work, please <a href="https://github.com/ricsne2010/skyscope-mini/issues">open an issue</a> with what you see.</div>
+<div class="warn"><b>Early release.</b> Version 1.1.0 builds cleanly and its screen has been checked with the same drawing code running on a computer (see <a href="#source">Building from source</a>), but it has not yet been run on the board itself. If anything doesn't work, please <a href="https://github.com/ricsne2010/skyscope-mini/issues">open an issue</a> with what you see.</div>
 
 <h2 id="needs">2. What you need</h2>
 <table>
@@ -122,11 +123,11 @@
 <p>There are two ways. Most people should use the browser: nothing to install on your computer.</p>
 <h3>From a web browser (recommended)</h3>
 <ol class="steps">
-  <li>Download <b>skyscope-mini-1.0.0.bin</b> from the <a href="https://github.com/ricsne2010/skyscope-mini/releases/latest">latest release</a> (under <i>Assets</i>).</li>
+  <li>Download <b>skyscope-mini-1.1.0.bin</b> from the <a href="https://github.com/ricsne2010/skyscope-mini/releases/latest">latest release</a> (under <i>Assets</i>).</li>
   <li>Plug the display into your computer with the USB-C cable.</li>
   <li>Open <a href="https://espressif.github.io/esptool-js/">https://espressif.github.io/esptool-js/</a> in <b>Chrome</b> or <b>Edge</b>. Leave the baud rate at 921600 and press <b>Connect</b>. Pick the port that appears (often “USB JTAG/serial debug unit” or “USB Single Serial”).
     <div class="note">No port listed? Hold the board's <b>BOOT</b> button, press and release <b>RST</b> (or unplug and replug the cable), then let go of BOOT and press Connect again. On Windows a driver install is occasionally needed for the CH340 chip some boards use.</div></li>
-  <li>Under <i>Flash Address</i> enter <code>0x0</code>, choose the <b>skyscope-mini-1.0.0.bin</b> file, and press <b>Program</b>. It takes about a minute.</li>
+  <li>Under <i>Flash Address</i> enter <code>0x0</code>, choose the <b>skyscope-mini-1.1.0.bin</b> file, and press <b>Program</b>. It takes about a minute.</li>
   <li>When it says it's finished, press the board's <b>RST</b> button (or unplug and replug it). The Project Moon Pi start-up screen appears.</li>
 </ol>
 <p>Updating later is the same: program the newer file. Your Wi-Fi and settings are kept unless you choose <i>Erase Flash</i>.</p>
@@ -145,7 +146,7 @@ pio device monitor         # optional: the board's log, 115200 baud</code></pre>
   <li>A setup page opens by itself (if it doesn't, browse to <code>http://192.168.4.1</code>). Choose <b>Configure WiFi</b>, pick your network and type its password.</li>
   <li>Press <b>Save</b>. The display joins your network and starts. It remembers the network from then on.</li>
 </ol>
-<div class="note">To change networks later, or if the router changes, <b>hold the BOOT button for 3 seconds</b> while the Mini is running. It forgets the Wi-Fi and opens the setup network again.</div>
+<div class="note">To change networks later, or if the router changes, <b>hold the BOOT button for 3 seconds</b> while the Mini is running. It forgets the Wi-Fi and opens the setup network again. Keep holding to <b>10 seconds</b> instead to restore the default display wiring (see <a href="#hardware">Display hardware</a>).</div>
 
 
 <h2 id="setup">5. Setting your location</h2>
@@ -193,26 +194,53 @@ pio device monitor         # optional: the board's log, 115200 baud</code></pre>
   <tr><td><b>Location</b></td><td>Latitude and longitude of the centre.</td></tr>
   <tr><td><b>Display</b></td><td>Distance unit and range; silhouettes or triangles; colour by kind; sweep; major-airport runways with extended centrelines; aircraft on the ground; emergency highlighting.</td></tr>
   <tr><td><b>Filters</b></td><td>Which kinds to show (airliners, business jets, general aviation, helicopters, military, other) and which altitude blocks (10,000 ft and below; 10,001 ft to FL180; FL180 to FL600).</td></tr>
-  <tr><td><b>About</b></td><td>Version, the Mini's address, the project link and credits.</td></tr>
+  <tr><td><b>About</b></td><td>Version, the Mini's address, the project link, credits, and a link to the <a href="#hardware">Display hardware</a> page.</td></tr>
 </table>
 <p>The page has no password: anyone on your Wi-Fi can open it.</p>
 
-<h2 id="trouble">9. Troubleshooting</h2>
+
+<h2 id="hardware">9. Display hardware (pins)</h2>
+<p>Boards sold as the ESP32-8048S043 have had small revisions, and similar boards use other pins. If the screen stays blank, the picture is shifted or rolls, the colours are wrong, or touch doesn't respond, you can change the display's wiring from a web page. You don't need to rebuild the firmware.</p>
+<p>Open the <b>Display hardware</b> page in either of these ways:</p>
+<ul>
+  <li>With the display on your Wi-Fi: <code>http://skyscope-mini.local/hardware</code>, or the link at the bottom of its settings page.</li>
+  <li>With a blank screen, or if you don't know its address: hold <b>BOOT for 3 seconds</b> and let go. That starts Wi-Fi setup. Join <code>SkyScope-Mini-Setup</code> and press <b>Display hardware</b> on the setup page. (After saving the pins, choose <i>Configure WiFi</i> again to rejoin your network.)</li>
+</ul>
+<table>
+  <tr><th>Section</th><th>What's there</th></tr>
+  <tr><td><b>Panel data lines</b></td><td>The GPIO for each of the 16 colour bits: B0–B4, G0–G5, R0–R4. If red and blue come out swapped, swap the B and R rows.</td></tr>
+  <tr><td><b>Panel control</b></td><td>DE (HENABLE), VSYNC, HSYNC, PCLK and the backlight pin (-1 if there's none).</td></tr>
+  <tr><td><b>Panel timing</b></td><td>Pixel clock (4–20 MHz), the front and back porches and sync widths, the sync polarities, and the PCLK idle level. These come from the panel's data sheet. A picture that's shifted sideways or rolls usually needs different porches.</td></tr>
+  <tr><td><b>Touch</b></td><td>GT911 or none; SDA, SCL, reset and interrupt pins; and the address (0x14 or 0x5D).</td></tr>
+</table>
+<p>Press <b>Save and restart</b>. The page checks the pins first: each must be a usable GPIO (1–21 or 38–48), and no pin can be used twice. Then the board restarts with the new wiring. <b>Restore defaults and restart</b> puts back the Sunton ESP32-8048S043 wiring, and so does holding <b>BOOT for 10 seconds</b>, even when you can't see the screen.</p>
+<table>
+  <tr><th>Default (ESP32-8048S043)</th><th>GPIO</th></tr>
+  <tr><td>B0–B4</td><td>8, 3, 46, 9, 1</td></tr>
+  <tr><td>G0–G5</td><td>5, 6, 7, 15, 16, 4</td></tr>
+  <tr><td>R0–R4</td><td>45, 48, 47, 21, 14</td></tr>
+  <tr><td>DE, VSYNC, HSYNC, PCLK</td><td>40, 41, 39, 42 (16 MHz; H porches 8/4/43, V 8/4/12; PCLK idle high)</td></tr>
+  <tr><td>Backlight</td><td>2</td></tr>
+  <tr><td>Touch (GT911)</td><td>SDA 19, SCL 20, reset 38, address 0x14</td></tr>
+</table>
+
+<h2 id="trouble">10. Troubleshooting</h2>
 <table>
   <tr><th>What you see</th><th>What to do</th></tr>
   <tr><td>“Waiting for data…” for a long time</td><td>Check the Wi-Fi has internet access. adsb.fi is a free community service and is occasionally slow or down; the Mini keeps trying.</td></tr>
   <tr><td>“adsb.fi answered 429”</td><td>Too many requests from your network (for example several Minis or other apps). It recovers by itself.</td></tr>
   <tr><td>No aircraft</td><td>Check the location (west and south are negative), the filters, and try a longer range.</td></tr>
   <tr><td>No runways</td><td>Only major airports are included, and only within the range plus about 25 km.</td></tr>
-  <tr><td>Touch does nothing</td><td>Your board may have resistive touch, or a touch chip at a different address (see <code>include/board.h</code>). The settings page does everything touch does.</td></tr>
-  <tr><td>Screen stays black, but the board's light is on</td><td>Press RST. If still black, the backlight or panel wiring may differ on your board revision: open an issue with a photo of the board's back and its exact listing title.</td></tr>
-  <tr><td>Picture is shifted, flickers, or the colours are wrong (blue looks red)</td><td>Boards sold under this name have had small changes. The pin map is in <code>include/board.h</code>; compare it with your seller's documentation and rebuild from source, or open an issue.</td></tr>
+  <tr><td>Touch does nothing</td><td>Your board may have resistive touch, or the touch chip may be on a different address or pins: try address 0x5D on the <a href="#hardware">Display hardware</a> page. The settings page does everything touch does.</td></tr>
+  <tr><td>Screen stays black, but the board's light is on</td><td>Press RST. If still black, your board revision may be wired differently: set its pins on the <a href="#hardware">Display hardware</a> page (it works without the screen). If you're stuck, open an issue with a photo of the board's back and its exact listing title.</td></tr>
+  <tr><td>Picture is shifted, flickers, or the colours are wrong (blue looks red)</td><td>Adjust the timing or pins on the <a href="#hardware">Display hardware</a> page. Red and blue swapped: swap the B and R rows.</td></tr>
+  <tr><td>Changed the pins and now nothing works</td><td>Hold BOOT for 10 seconds: the default wiring comes back and the board restarts. Or press <b>Restore defaults</b> on the Display hardware page.</td></tr>
   <tr><td>“Not enough memory for the screen buffers”</td><td>The board has no PSRAM, so it is a different model. This firmware needs the 8 MB PSRAM version (ESP32-S3 N16R8).</td></tr>
   <tr><td>Stuck on the Wi-Fi setup screen</td><td>Check the password, and that the network is 2.4 GHz. Join <code>SkyScope-Mini-Setup</code> again to retry.</td></tr>
-  <tr><td>Want to start over</td><td>Hold BOOT for 3 seconds (forgets Wi-Fi), or use <i>Erase Flash</i> in the web installer and program the file again (forgets everything).</td></tr>
+  <tr><td>Want to start over</td><td>Hold BOOT for 3 seconds and let go (forgets Wi-Fi), or use <i>Erase Flash</i> in the web installer and program the file again (forgets everything).</td></tr>
 </table>
 
-<h2 id="source">10. Building from source and the desktop preview</h2>
+<h2 id="source">11. Building from source and the desktop preview</h2>
 <p>The code is in C++ for the Arduino framework, built with PlatformIO. The parts: <code>src/mini.cpp</code> saves settings and fetches from adsb.fi on its own task; <code>src/mini_core.cpp</code> holds ranges, rings, aircraft classification and the JSON reading; <code>src/render.cpp</code> draws the screen; <code>src/scope.cpp</code> holds the shared scope drawing (rings, symbols, tags, sweep); <code>src/main.cpp</code> starts everything, handles touch and serves the settings page. The major-airport runway table in <code>src/data/</code> is built from OurAirports by <code>tools/build_large_airports.py</code>.</p>
 <p><code>include/shapes.h</code> holds the aircraft silhouettes and type lists. It is generated from SkyScope's own <code>symbols.py</code> by <code>tools/gen_shapes.py</code>, so all the SkyScope projects draw and classify aircraft the same way.</p>
 <h3>Desktop preview</h3>
@@ -222,7 +250,7 @@ tools/preview/build.sh     # SDL_INC=… SDL_LIB=… if SDL2 isn't installed sys
 <p>The comment at the top of <code>tools/preview/preview.cpp</code> shows its arguments.</p>
 
 
-<h2 id="credits">11. Credits and licence</h2>
+<h2 id="credits">12. Credits and licence</h2>
 <p>SkyScope Mini comes full circle: SkyScope grew out of <a href="https://github.com/MatixYo/ESP32-Plane-Radar">ESP32-Plane-Radar</a> by MatixYo (MIT licence), a radar for a small round ESP32 display, and the Mini brings SkyScope back to an ESP32. The runway table comes from that project's airport data tool.</p>
 <table>
   <tr><th>What</th><th>Source</th><th>Terms</th></tr>
