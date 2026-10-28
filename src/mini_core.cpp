@@ -18,8 +18,48 @@ namespace mini {
 
 const char* const kKindLabels[kKindCount] = {"Airliners", "Business jets", "General aviation",
                                               "Helicopters", "Military", "Other / unknown"};
-const char* const kAltLabels[kAltCount] = {"10,000 ft and below", "10,001 ft to FL180", "FL180 to FL600"};
 Settings settings;
+
+// --- altitude blocks, counted from the ground -----------------------------------------
+
+namespace {
+float s_lookedUpFt = NAN;
+
+void withCommas(int v, char* out, size_t n) {
+  if (v >= 1000) snprintf(out, n, "%d,%03d", v / 1000, v % 1000);
+  else snprintf(out, n, "%d", v);
+}
+}  // namespace
+
+void setLookedUpElevation(float feet) { s_lookedUpFt = feet; }
+
+bool groundElevationKnown() { return !settings.elevationAuto || !std::isnan(s_lookedUpFt); }
+
+float groundElevationFt() {
+  if (!settings.elevationAuto) return settings.groundFt;
+  return std::isnan(s_lookedUpFt) ? 0.0f : s_lookedUpFt;
+}
+
+int lowBandTop() {
+  const float top = std::round((std::max(0.0f, groundElevationFt()) + 10000.0f) / 100.0f) * 100.0f;
+  return static_cast<int>(std::min(17900.0f, top));
+}
+
+uint8_t altBand(int32_t altFt) {
+  if (altFt <= lowBandTop()) return kLow;
+  return altFt < 18000 ? kMid : kHigh;
+}
+
+void altLabel(uint8_t band, char* out, size_t n) {
+  const int top = lowBandTop();
+  char a[12], b[12];
+  withCommas(top, a, sizeof a);
+  withCommas(top + 1, b, sizeof b);
+  if (band == kHigh) snprintf(out, n, "FL180 to FL600");
+  else if (band == kMid) snprintf(out, n, "%s ft to FL180", b);
+  else if (top == 10000) snprintf(out, n, "10,000 ft and below");
+  else snprintf(out, n, "%s ft and below (10,000 ft AGL)", a);
+}
 
 namespace {
 constexpr float kRanges[3][6] = {{5, 10, 15, 25, 50, 100}, {2, 5, 10, 15, 25, 50}, {2, 5, 10, 20, 40, 40}};

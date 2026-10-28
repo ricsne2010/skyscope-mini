@@ -120,7 +120,7 @@ bool passesFilters(const mini::Plane& p) {
   if (mini::settings.hiddenAlts) {
     if (p.ground) return !(mini::settings.hiddenAlts & 1);
     if (p.alt == INT32_MIN) return false;
-    const int band = p.alt <= 10000 ? mini::kLow : p.alt < 18000 ? mini::kMid : mini::kHigh;
+    const int band = mini::altBand(p.alt);  // the low block counts from the ground
     if (mini::settings.hiddenAlts & (1 << band)) return false;
   }
   return true;

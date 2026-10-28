@@ -13,9 +13,10 @@ enum Unit : uint8_t { kKm = 0, kMi = 1, kNm = 2 };
 // Kinds of aircraft (as SkyScope): bit positions in Settings::hiddenKinds.
 enum Kind : uint8_t { kAirliner, kBizjet, kGa, kHelicopter, kMilitary, kOther, kKindCount };
 extern const char* const kKindLabels[kKindCount];
-// Altitude blocks: bit positions in Settings::hiddenAlts.
+// Altitude blocks: bit positions in Settings::hiddenAlts. The low block
+// reaches 10,000 ft above the ground at the centre (as in SkyScope): over
+// Denver that's about 15,200 ft MSL.
 enum AltBand : uint8_t { kLow, kMid, kHigh, kAltCount };
-extern const char* const kAltLabels[kAltCount];
 
 struct Settings {
   double lat = 52.3676, lon = 4.9041;
@@ -23,10 +24,21 @@ struct Settings {
   uint8_t rangeIndex = 1;
   uint8_t hiddenKinds = 0, hiddenAlts = 0;
   bool colorByKind = false, sweep = true, runways = true, ground = false, emergencies = true, silhouettes = true;
+  bool elevationAuto = true;   // ground elevation: looked up for the centre, else groundFt
+  int16_t groundFt = 0;        // entered elevation, ft above sea level
 };
 extern Settings settings;
 void loadSettings();
 void saveSettings();
+
+// Ground elevation (ft MSL) at the centre: the entered one, or the one looked
+// up (setLookedUpElevation; NAN until known, then sea level is used).
+void setLookedUpElevation(float feet);
+float groundElevationFt();
+bool groundElevationKnown();
+int lowBandTop();                                     // ft MSL: ground + 10,000, below FL180
+uint8_t altBand(int32_t altFt);                       // kLow / kMid / kHigh
+void altLabel(uint8_t band, char* out, size_t n);     // "15,200 ft and below (10,000 ft AGL)"
 
 // Ranges (to the outer ring) per unit, reduced to suit the Mini.
 int rangeCount();

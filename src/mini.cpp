@@ -5,6 +5,8 @@
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
 
+#include <cmath>
+
 #include <freertos/FreeRTOS.h>
 #include <freertos/semphr.h>
 
@@ -26,6 +28,8 @@ void loadSettings() {
   settings.rangeIndex = prefs.getUChar("range", settings.rangeIndex);
   settings.hiddenKinds = prefs.getUChar("kinds", 0);
   settings.hiddenAlts = prefs.getUChar("alts", 0);
+  settings.elevationAuto = prefs.getBool("elevauto", true);
+  settings.groundFt = prefs.getShort("groundft", 0);
   settings.colorByKind = prefs.getBool("color", false);
   settings.sweep = prefs.getBool("sweep", true);
   settings.runways = prefs.getBool("rwys", true);
@@ -44,6 +48,8 @@ void saveSettings() {
   prefs.putUChar("range", settings.rangeIndex);
   prefs.putUChar("kinds", settings.hiddenKinds);
   prefs.putUChar("alts", settings.hiddenAlts);
+  prefs.putBool("elevauto", settings.elevationAuto);
+  prefs.putShort("groundft", settings.groundFt);
   prefs.putBool("color", settings.colorByKind);
   prefs.putBool("sweep", settings.sweep);
   prefs.putBool("rwys", settings.runways);
@@ -88,10 +94,35 @@ bool fetch(Snapshot& out) {
   return parseAdsb(body.c_str(), body.length(), out);
 }
 
+// The centre's ground elevation from Open-Meteo (free, no key), once per place.
+void lookUpElevation() {
+  static double lastLat = NAN, lastLon = NAN;
+  if (std::fabs(settings.lat - lastLat) < 0.005 && std::fabs(settings.lon - lastLon) < 0.005) return;
+  char url[128];
+  snprintf(url, sizeof url, "https://api.open-meteo.com/v1/elevation?latitude=%.4f&longitude=%.4f", settings.lat,
+           settings.lon);
+  WiFiClientSecure client;
+  client.setInsecure();
+  HTTPClient http;
+  http.setTimeout(8000);
+  if (!http.begin(client, url)) return;
+  http.setUserAgent("SkyScope-Mini (+https://github.com/ricsne2010/skyscope-mini)");
+  if (http.GET() == 200) {
+    JsonDocument doc;
+    if (!deserializeJson(doc, http.getString()) && doc["elevation"][0].is<float>()) {
+      setLookedUpElevation(doc["elevation"][0].as<float>() * 3.28084f);
+      lastLat = settings.lat;
+      lastLon = settings.lon;
+    }
+  }
+  http.end();
+}
+
 void task(void*) {
   for (;;) {
     s_refresh = false;
     if (WiFi.status() == WL_CONNECTED) {
+      lookUpElevation();  // first, and again after the location changes
       const bool ok = fetch(*s_back);
       xSemaphoreTake(s_mutex, portMAX_DELAY);
       if (ok) {

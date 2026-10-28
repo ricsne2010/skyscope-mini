@@ -12,7 +12,7 @@ sized for a microcontroller.
 
 ![Mini screen: Phoenix Sky Harbor at 25 miles, colour by kind](docs/images/screen.png)
 
-> **Early release.** 1.1.2 builds cleanly and its screen has been checked with
+> **Early release.** 1.1.3 builds cleanly and its screen has been checked with
 > the same drawing code running on a computer (the picture above), but it has not
 > yet been run on the board itself. Please [open an issue](https://github.com/ricsne2010/skyscope-mini/issues)
 > if something doesn't work.
@@ -28,6 +28,7 @@ sized for a microcontroller.
 - Silhouettes or triangles, colour by kind, speed lines, tags that avoid each other, the sweep
 - Runways and extended centrelines at major airports
 - Filters by kind (airliners, business jets, GA, helicopters, military, other) and altitude block
+  (the lowest block counts 10,000 ft from the ground, so it works over high country like Denver)
 - Emergency squawks (7500/7600/7700) flash and always show
 - Nearest-aircraft card (or tap an aircraft to select it), list, UTC clock
 - Touch −/+ range buttons: 5–100 km, 2–50 mi or 2–40 nm
@@ -48,7 +49,7 @@ run [SkyScope](https://github.com/ricsne2010/skyscope) on a Pi and add a
 
 ## Install
 
-**From a browser (no tools needed):** download `skyscope-mini-1.1.2.bin` from the
+**From a browser (no tools needed):** download `skyscope-mini-1.1.3.bin` from the
 [latest release](https://github.com/ricsne2010/skyscope-mini/releases/latest),
 open the [ESP web flasher](https://espressif.github.io/esptool-js/) in Chrome or
 Edge, connect to the board, and program the file at address **0x0**. If no port
@@ -107,6 +108,7 @@ MIT licence (see [LICENSE](LICENSE)). SkyScope grew out of
 [ESP32-Plane-Radar](https://github.com/MatixYo/ESP32-Plane-Radar) by MatixYo
 (MIT), and the runway table tool comes from it. Aircraft data:
 [adsb.fi](https://adsb.fi) open data. Airports: OurAirports (public domain).
+Ground elevation: [Open-Meteo](https://open-meteo.com/) (Copernicus DEM GLO-90, CC BY 4.0).
 Libraries: LovyanGFX (FreeBSD), with its GNU FreeFont text (GPL with font
 exception); WiFiManager (MIT); ArduinoJson (MIT); the Espressif Arduino core
 (LGPL 2.1), built with PlatformIO (Apache 2.0). Built with

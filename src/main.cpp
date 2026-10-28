@@ -21,7 +21,7 @@
 #include "mini.h"
 #include "render.h"
 
-#define SKYSCOPE_MINI_VERSION "1.1.2"
+#define SKYSCOPE_MINI_VERSION "1.1.3"
 
 namespace {
 
@@ -106,7 +106,24 @@ void handleRoot() {
   p += String(settings.lat, 5);
   p += F("'></label><label>Longitude<input name=lon type=number step=any value='");
   p += String(settings.lon, 5);
-  p += F("'></label></div><p class=dim>The centre of the radar. Tip: find an airport's position on a map, or use SkyScope's airport search.</p></section>");
+  p += F("'></label></div><p class=dim>The centre of the radar. Tip: find an airport's position on a map, or use SkyScope's airport search.</p>"
+         "<div class=row><label>Ground elevation<select name=elevauto><option value=1");
+  p += settings.elevationAuto ? " selected" : "";
+  p += F(">Automatic</option><option value=0");
+  p += settings.elevationAuto ? "" : " selected";
+  p += F(">Enter it</option></select></label><label>Elevation, ft (if entered)<input name=groundft type=number step=1 value='");
+  p += String(settings.groundFt);
+  p += F("'></label></div><p class=dim>");
+  {
+    char low[48];
+    mini::altLabel(mini::kLow, low, sizeof low);
+    p += mini::groundElevationKnown() ? String("Ground elevation ") + String(mini::groundElevationFt(), 0) +
+                                            (settings.elevationAuto ? " ft (looked up)" : " ft (entered)")
+                                      : String("Ground elevation: looking it up (sea level until then)");
+    p += String(". The low altitude block is ") + low + ".";
+  }
+  p += F(" It counts from the ground: over Denver it reaches about 15,200 ft. Automatic looks the centre up "
+         "(Open-Meteo).</p></section>");
   p += F("<section><h2>Display</h2><div class=row><label>Distance unit<select name=unit>");
   const char* units[] = {"Kilometres", "Statute miles", "Nautical miles"};
   for (int i = 0; i < 3; ++i) p += String("<option value=") + i + (settings.unit == i ? " selected>" : ">") + units[i] + "</option>";
@@ -130,7 +147,9 @@ void handleRoot() {
   }
   p += F("</div><div class=row>");
   for (int i = 0; i < mini::kAltCount; ++i) {
-    p += checkbox((String("a") + i).c_str(), mini::kAltLabels[i], !(settings.hiddenAlts & (1 << i)));
+    char label[48];
+    mini::altLabel(i, label, sizeof label);
+    p += checkbox((String("a") + i).c_str(), label, !(settings.hiddenAlts & (1 << i)));
   }
   p += F("</div></section><button>Save</button></form>");
   p += F("<section><h2>About</h2><p>SkyScope Mini is a standalone version of <a href='https://github.com/ricsne2010/skyscope'>SkyScope</a> "
@@ -138,7 +157,7 @@ void handleRoot() {
          "filters, emergency alerts and major-airport runways.</p><p class=dim>Version " SKYSCOPE_MINI_VERSION " &middot; ");
   p += esc(String(g_mdnsName) + ".local (" + device::address() + ")");
   p += F("</p><p><a href='https://github.com/ricsne2010/skyscope-mini'>github.com/ricsne2010/skyscope-mini</a></p>"
-         "<p class=dim>Hold the BOOT button for 3 seconds to set up Wi-Fi again (10 seconds restores the default display wiring). Board wired differently? <a href='/hardware'>Display hardware (pins)</a>. Aircraft data: adsb.fi. Grew out of "
+         "<p class=dim>Hold the BOOT button for 3 seconds to set up Wi-Fi again (10 seconds restores the default display wiring). Board wired differently? <a href='/hardware'>Display hardware (pins)</a>. Aircraft data: adsb.fi. Ground elevation: Open-Meteo (CC BY 4.0). Grew out of "
          "ESP32-Plane-Radar by MatixYo (MIT). Not for navigation.</p></section></main></body></html>");
   server.send(200, "text/html", p);
 }
@@ -150,6 +169,9 @@ void handleSave() {
     settings.lat = lat;
     settings.lon = lon;
   }
+  settings.elevationAuto = server.arg("elevauto") != "0";
+  const long ground = server.arg("groundft").toInt();
+  if (ground >= -1500 && ground <= 18000) settings.groundFt = static_cast<int16_t>(ground);
   const int unit = server.arg("unit").toInt();
   if (unit != settings.unit && unit >= 0 && unit <= 2) {
     // Keep about the same reach when the unit changes.

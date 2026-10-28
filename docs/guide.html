@@ -73,7 +73,7 @@
   <p class="lede">A small standalone aircraft radar on a 4.3-inch ESP32-S3 display. No Raspberry Pi needed.</p>
   <figure><img src="images/screen.png" alt="SkyScope Mini screen">
     <figcaption>SkyScope Mini centred on Phoenix Sky Harbor at 25 miles.</figcaption></figure>
-  <p class="meta">Version 1.1.2 · Project: <a href="https://github.com/ricsne2010/skyscope-mini">github.com/ricsne2010/skyscope-mini</a> · Licence: MIT · Not for navigation.
+  <p class="meta">Version 1.1.3 · Project: <a href="https://github.com/ricsne2010/skyscope-mini">github.com/ricsne2010/skyscope-mini</a> · Licence: MIT · Not for navigation.
     <span class="no-print"> · <a href="SkyScope-Mini-Guide.pdf">Download this guide as a PDF</a></span></p>
 </section>
 
@@ -106,7 +106,7 @@
   <tr><td>Tap to select, −/+ range buttons, nearest-aircraft card, list, UTC clock</td><td>Browser radar, airspeed, full settings site</td></tr>
 </table>
 <p>If you already run SkyScope on a Pi and want the full picture on a small screen, use <a href="https://github.com/ricsne2010/skyscope-satellite">SkyScope Satellite</a> instead: it mirrors your SkyScope.</p>
-<div class="warn"><b>Early release.</b> Version 1.1.2 builds cleanly and its screen has been checked with the same drawing code running on a computer (see <a href="#source">Building from source</a>), but it has not yet been run on the board itself. If anything doesn't work, please <a href="https://github.com/ricsne2010/skyscope-mini/issues">open an issue</a> with what you see.</div>
+<div class="warn"><b>Early release.</b> Version 1.1.3 builds cleanly and its screen has been checked with the same drawing code running on a computer (see <a href="#source">Building from source</a>), but it has not yet been run on the board itself. If anything doesn't work, please <a href="https://github.com/ricsne2010/skyscope-mini/issues">open an issue</a> with what you see.</div>
 
 <h2 id="needs">2. What you need</h2>
 <table>
@@ -124,11 +124,11 @@
 <p>There are two ways. Most people should use the browser: nothing to install on your computer.</p>
 <h3>From a web browser (recommended)</h3>
 <ol class="steps">
-  <li>Download <b>skyscope-mini-1.1.2.bin</b> from the <a href="https://github.com/ricsne2010/skyscope-mini/releases/latest">latest release</a> (under <i>Assets</i>).</li>
+  <li>Download <b>skyscope-mini-1.1.3.bin</b> from the <a href="https://github.com/ricsne2010/skyscope-mini/releases/latest">latest release</a> (under <i>Assets</i>).</li>
   <li>Plug the display into your computer with the USB-C cable.</li>
   <li>Open <a href="https://espressif.github.io/esptool-js/">https://espressif.github.io/esptool-js/</a> in <b>Chrome</b> or <b>Edge</b>. Leave the baud rate at 921600 and press <b>Connect</b>. Pick the port that appears (often “USB JTAG/serial debug unit” or “USB Single Serial”).
     <div class="note">No port listed? Hold the board's <b>BOOT</b> button, press and release <b>RST</b> (or unplug and replug the cable), then let go of BOOT and press Connect again. On Windows a driver install is occasionally needed for the CH340 chip some boards use.</div></li>
-  <li>Under <i>Flash Address</i> enter <code>0x0</code>, choose the <b>skyscope-mini-1.1.2.bin</b> file, and press <b>Program</b>. It takes about a minute.</li>
+  <li>Under <i>Flash Address</i> enter <code>0x0</code>, choose the <b>skyscope-mini-1.1.3.bin</b> file, and press <b>Program</b>. It takes about a minute.</li>
   <li>When it says it's finished, press the board's <b>RST</b> button (or unplug and replug it). The Project Moon Pi start-up screen appears.</li>
 </ol>
 <p>Updating later is the same: program the newer file. Your Wi-Fi and settings are kept unless you choose <i>Erase Flash</i>.</p>
@@ -192,9 +192,9 @@ pio device monitor         # optional: the board's log, 115200 baud</code></pre>
 <p>At <code>http://skyscope-mini.local</code> (or the numeric address on the screen). Changes apply when you press <b>Save</b> and are kept when the power is off.</p>
 <table>
   <tr><th>Section</th><th>Settings</th></tr>
-  <tr><td><b>Location</b></td><td>Latitude and longitude of the centre.</td></tr>
+  <tr><td><b>Location</b></td><td>Latitude and longitude of the centre, and its ground elevation: <i>Automatic</i> (looked up from Open-Meteo, free) or entered. The lowest altitude block counts from that ground, so over Denver (about 5,200 ft) it reaches 15,200 ft rather than 10,000. The page shows the elevation in use.</td></tr>
   <tr><td><b>Display</b></td><td>Distance unit and range; silhouettes or triangles; colour by kind; sweep; major-airport runways with extended centrelines; aircraft on the ground; emergency highlighting.</td></tr>
-  <tr><td><b>Filters</b></td><td>Which kinds to show (airliners, business jets, general aviation, helicopters, military, other) and which altitude blocks (10,000 ft and below; 10,001 ft to FL180; FL180 to FL600).</td></tr>
+  <tr><td><b>Filters</b></td><td>Which kinds to show (airliners, business jets, general aviation, helicopters, military, other) and which altitude blocks (10,000 ft above the ground and below; from there to FL180; FL180 to FL600).</td></tr>
   <tr><td><b>About</b></td><td>Version, the Mini's address, the project link, credits, and a link to the <a href="#hardware">Display hardware</a> page.</td></tr>
 </table>
 <p>The page has no password: anyone on your Wi-Fi can open it.</p>
@@ -256,6 +256,7 @@ tools/preview/build.sh     # SDL_INC=… SDL_LIB=… if SDL2 isn't installed sys
 <table>
   <tr><th>What</th><th>Source</th><th>Terms</th></tr>
   <tr><td>Live aircraft</td><td>adsb.fi open data</td><td>adsb.fi terms (at most one request a second; the Mini uses one every five)</td></tr>
+  <tr><td>Ground elevation</td><td>Open-Meteo elevation API (Copernicus DEM GLO-90)</td><td>CC BY 4.0</td></tr>
     <tr><td>Airports and runways</td><td>OurAirports</td><td>Public domain</td></tr>
   <tr><td>Graphics</td><td>LovyanGFX</td><td>FreeBSD licence</td></tr>
   <tr><td>Wi-Fi setup</td><td>WiFiManager</td><td>MIT</td></tr>
