@@ -73,7 +73,7 @@
   <p class="lede">A small standalone aircraft radar on a 4.3-inch ESP32-S3 display. No Raspberry Pi needed.</p>
   <figure><img src="images/screen.png" alt="SkyScope Mini screen">
     <figcaption>SkyScope Mini centred on Phoenix Sky Harbor at 25 miles.</figcaption></figure>
-  <p class="meta">Version 1.1.0 · Project: <a href="https://github.com/ricsne2010/skyscope-mini">github.com/ricsne2010/skyscope-mini</a> · Licence: MIT · Not for navigation.
+  <p class="meta">Version 1.1.1 · Project: <a href="https://github.com/ricsne2010/skyscope-mini">github.com/ricsne2010/skyscope-mini</a> · Licence: MIT · Not for navigation.
     <span class="no-print"> · <a href="SkyScope-Mini-Guide.pdf">Download this guide as a PDF</a></span></p>
 </section>
 
@@ -106,7 +106,7 @@
   <tr><td>Tap to select, −/+ range buttons, nearest-aircraft card, list, UTC clock</td><td>Browser radar, airspeed, full settings site</td></tr>
 </table>
 <p>If you already run SkyScope on a Pi and want the full picture on a small screen, use <a href="https://github.com/ricsne2010/skyscope-satellite">SkyScope Satellite</a> instead: it mirrors your SkyScope.</p>
-<div class="warn"><b>Early release.</b> Version 1.1.0 builds cleanly and its screen has been checked with the same drawing code running on a computer (see <a href="#source">Building from source</a>), but it has not yet been run on the board itself. If anything doesn't work, please <a href="https://github.com/ricsne2010/skyscope-mini/issues">open an issue</a> with what you see.</div>
+<div class="warn"><b>Early release.</b> Version 1.1.1 builds cleanly and its screen has been checked with the same drawing code running on a computer (see <a href="#source">Building from source</a>), but it has not yet been run on the board itself. If anything doesn't work, please <a href="https://github.com/ricsne2010/skyscope-mini/issues">open an issue</a> with what you see.</div>
 
 <h2 id="needs">2. What you need</h2>
 <table>
@@ -123,11 +123,11 @@
 <p>There are two ways. Most people should use the browser: nothing to install on your computer.</p>
 <h3>From a web browser (recommended)</h3>
 <ol class="steps">
-  <li>Download <b>skyscope-mini-1.1.0.bin</b> from the <a href="https://github.com/ricsne2010/skyscope-mini/releases/latest">latest release</a> (under <i>Assets</i>).</li>
+  <li>Download <b>skyscope-mini-1.1.1.bin</b> from the <a href="https://github.com/ricsne2010/skyscope-mini/releases/latest">latest release</a> (under <i>Assets</i>).</li>
   <li>Plug the display into your computer with the USB-C cable.</li>
   <li>Open <a href="https://espressif.github.io/esptool-js/">https://espressif.github.io/esptool-js/</a> in <b>Chrome</b> or <b>Edge</b>. Leave the baud rate at 921600 and press <b>Connect</b>. Pick the port that appears (often “USB JTAG/serial debug unit” or “USB Single Serial”).
     <div class="note">No port listed? Hold the board's <b>BOOT</b> button, press and release <b>RST</b> (or unplug and replug the cable), then let go of BOOT and press Connect again. On Windows a driver install is occasionally needed for the CH340 chip some boards use.</div></li>
-  <li>Under <i>Flash Address</i> enter <code>0x0</code>, choose the <b>skyscope-mini-1.1.0.bin</b> file, and press <b>Program</b>. It takes about a minute.</li>
+  <li>Under <i>Flash Address</i> enter <code>0x0</code>, choose the <b>skyscope-mini-1.1.1.bin</b> file, and press <b>Program</b>. It takes about a minute.</li>
   <li>When it says it's finished, press the board's <b>RST</b> button (or unplug and replug it). The Project Moon Pi start-up screen appears.</li>
 </ol>
 <p>Updating later is the same: program the newer file. Your Wi-Fi and settings are kept unless you choose <i>Erase Flash</i>.</p>
