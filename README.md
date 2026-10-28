@@ -44,6 +44,7 @@ run [SkyScope](https://github.com/ricsne2010/skyscope) on a Pi and add a
 | Display | **Sunton ESP32-8048S043**: ESP32-S3 (16 MB flash, 8 MB PSRAM), 4.3″ 800×480, GT911 capacitive touch |
 | Cable and power | USB-C data cable; any 5 V USB supply of 1 A or more |
 | Network | 2.4 GHz Wi-Fi with internet access |
+| Case (optional) | The 3D-printable radar-console desk case in [skyscope-satellite/case](https://github.com/ricsne2010/skyscope-satellite/tree/main/case) fits the Mini too |
 
 ## Install
 
