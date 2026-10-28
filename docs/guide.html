@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SkyScope Mini Guide</title>
+<link rel="icon" href="images/moon-pi-logo-128.png">
+<style>
+  :root { --ink: #16202e; --dim: #5a677a; --line: #d9dfe8; --accent: #0f8f4f; --soft: #f3f6fa; --warn: #fff6dc; --warn-line: #e8c96a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #fff; color: var(--ink); font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 32px 24px 64px; }
+  h1, h2, h3 { line-height: 1.25; }
+  h1 { font-size: 2.6rem; margin: 0; letter-spacing: .01em; }
+  h2 { font-size: 1.55rem; margin: 2.4em 0 .6em; padding-bottom: .3em; border-bottom: 2px solid var(--line); }
+  h3 { font-size: 1.15rem; margin: 1.8em 0 .4em; }
+  p, li { max-width: 72ch; }
+  a { color: var(--accent); }
+  code, kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .9em; }
+  code { background: var(--soft); padding: 1px 5px; border-radius: 4px; }
+  kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: #fff; }
+  pre { background: #0d1626; color: #e8ecf2; padding: 14px 16px; border-radius: 8px; overflow-x: auto; font-size: .88rem; line-height: 1.5; }
+  pre code { background: none; padding: 0; color: inherit; }
+  table { border-collapse: collapse; width: 100%; margin: .8em 0 1.2em; font-size: .95rem; }
+  th, td { text-align: left; vertical-align: top; padding: 7px 10px; border-bottom: 1px solid var(--line); }
+  th { background: var(--soft); font-weight: 700; }
+  figure { margin: 1.2em 0 1.6em; }
+  figure img { display: block; max-width: 100%; border-radius: 8px; border: 1px solid var(--line); }
+  figcaption { color: var(--dim); font-size: .9rem; margin-top: 6px; }
+  .note { background: var(--soft); border-left: 4px solid var(--accent); padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 1em 0; }
+  .warn { background: var(--warn); border-left: 4px solid var(--warn-line); padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 1em 0; }
+  .steps { counter-reset: step; list-style: none; padding-left: 0; }
+  .steps > li { counter-increment: step; position: relative; padding-left: 44px; margin: 0 0 1.1em; }
+  .steps > li::before { content: counter(step); position: absolute; left: 0; top: 0; width: 30px; height: 30px; border-radius: 50%;
+                         background: var(--accent); color: #fff; font-weight: 700; display: grid; place-items: center; font-size: .9rem; }
+  .cover { text-align: left; padding: 24px 0 8px; }
+  .cover .brand { display: flex; align-items: center; gap: 18px; }
+  .cover .brand img { width: 108px; height: 108px; flex: none; }
+  .cover .tag { color: var(--accent); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; font-size: .85rem; }
+  .cover p.lede { font-size: 1.2rem; color: var(--dim); margin: .6em 0 1.4em; }
+  .toc { columns: 2; column-gap: 32px; padding-left: 1.2em; }
+  .toc li { break-inside: avoid; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  .meta { color: var(--dim); font-size: .9rem; }
+  @media (max-width: 640px) { .two { grid-template-columns: 1fr; } .toc { columns: 1; } h1 { font-size: 2rem; } }
+  /* Printing / PDF */
+  @page { size: Letter; margin: 16mm 15mm 18mm; }
+  @media print {
+    body { font-size: 11pt; }
+    main { max-width: none; padding: 0; }
+    a { color: var(--ink); text-decoration: none; }
+    h2 { break-before: page; margin-top: 0; }
+    h2.keep { break-before: auto; margin-top: 1.6em; }
+    h2, h3 { break-after: avoid; }
+    figure, pre, table, .note, .warn, .steps > li { break-inside: avoid; }
+    .no-print { display: none; }
+    /* Screenshots can't split across pages, so keep them compact on paper. */
+    figure img { max-height: 92mm; width: auto; max-width: 100%; margin: 0 auto; }
+    .cover figure img { max-height: 82mm; }
+    .two figure img { max-height: 60mm; }
+    .cover .lede { margin-bottom: .8em; }
+    .toc { font-size: 10.5pt; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+<section class="cover">
+  <div class="brand"><img src="images/moon-pi-logo.png" alt="Project Moon Pi logo"><div>
+    <div class="tag">A Project Moon Pi project · User guide</div>
+    <h1>SkyScope Mini</h1></div></div>
+  <p class="lede">A small standalone aircraft radar on a 4.3-inch ESP32-S3 display. No Raspberry Pi needed.</p>
+  <figure><img src="images/screen.png" alt="SkyScope Mini screen">
+    <figcaption>SkyScope Mini centred on Phoenix Sky Harbor at 25 miles.</figcaption></figure>
+  <p class="meta">Version 1.0.0 · Project: <a href="https://github.com/ricsne2010/skyscope-mini">github.com/ricsne2010/skyscope-mini</a> · Licence: MIT · Not for navigation.
+    <span class="no-print"> · <a href="SkyScope-Mini-Guide.pdf">Download this guide as a PDF</a></span></p>
+</section>
+
+<h2 class="keep">Contents</h2>
+<ol class="toc">
+  <li><a href="#what">What the Mini does</a></li>
+  <li><a href="#needs">What you need</a></li>
+  <li><a href="#install">Installing the firmware</a></li>
+  <li><a href="#wifi">First start: joining Wi-Fi</a></li>
+  <li><a href="#setup">Setting your location</a></li>
+  <li><a href="#screen">Reading the screen</a></li>
+  <li><a href="#touch">Touch controls</a></li>
+  <li><a href="#page">The settings page</a></li>
+  <li><a href="#trouble">Troubleshooting</a></li>
+  <li><a href="#source">Building from source</a></li>
+  <li><a href="#credits">Credits and licence</a></li>
+</ol>
+
+<h2 id="what">1. What the Mini does</h2>
+<p>SkyScope Mini is a small, standalone aircraft radar on a 4.3-inch display. It connects to your Wi-Fi, fetches live aircraft positions from <a href="https://adsb.fi">adsb.fi</a>'s open data every five seconds, and draws them on an air-traffic-control-style scope with a sweeping beam. No Raspberry Pi or other computer is needed once it's set up.</p>
+<p>It's a reduced version of <a href="https://github.com/ricsne2010/skyscope">SkyScope</a>, sized for the memory and speed of an ESP32 microcontroller:</p>
+<table>
+  <tr><th>The Mini has</th><th>Only on full SkyScope</th></tr>
+  <tr><td>Live aircraft from adsb.fi (up to 150 at once), smooth motion between updates</td><td>Your own SDR receiver; GPS location</td></tr>
+  <tr><td>Silhouettes or triangles, colour by kind, speed lines, tags, sweep</td><td>Airline logos and aircraft photos</td></tr>
+  <tr><td>Runways and extended centrelines at major airports</td><td>Smaller airports, airspace, SIDs and STARs</td></tr>
+  <tr><td>Filters by kind and altitude block; emergency squawk alerts</td><td>Type, operator and country filters; presets; watchlist</td></tr>
+  <tr><td>Ranges up to 100 km / 50 mi / 40 nm</td><td>Ranges up to 250 mi</td></tr>
+  <tr><td>Tap to select, −/+ range buttons, nearest-aircraft card, list, UTC clock</td><td>Browser radar, airspeed, full settings site</td></tr>
+</table>
+<p>If you already run SkyScope on a Pi and want the full picture on a small screen, use <a href="https://github.com/ricsne2010/skyscope-satellite">SkyScope Satellite</a> instead: it mirrors your SkyScope.</p>
+<div class="warn"><b>First release.</b> Version 1.0.0 builds cleanly and its screen has been checked with the same drawing code running on a computer (see <a href="#source">Building from source</a>), but it has not yet been run on the board itself. If anything doesn't work, please <a href="https://github.com/ricsne2010/skyscope-mini/issues">open an issue</a> with what you see.</div>
+
+<h2 id="needs">2. What you need</h2>
+<table>
+  <tr><th>Item</th><th>Details</th></tr>
+  <tr><td><b>Display board</b></td><td><b>Sunton ESP32-8048S043</b>, sold as “4.3 inch ESP32-S3 display 800×480”; check the listing names the 8048S043. It has an ESP32-S3 with 16 MB of flash and 8 MB of PSRAM, an 800 × 480 screen and a touch panel. Choose the <b>capacitive</b> touch version (GT911) if offered; the resistive one works but its touch is not used.</td></tr>
+  <tr><td><b>USB cable</b></td><td>USB-C data cable (a charge-only cable won't let you install the firmware).</td></tr>
+  <tr><td><b>Power</b></td><td>Any 5 V USB supply of 1 A or more. Once installed, the computer is no longer needed.</td></tr>
+  <tr><td><b>Wi-Fi</b></td><td>A 2.4 GHz network (the ESP32 can't use 5 GHz).</td></tr>
+  <tr><td><b>Computer, once</b></td><td>To install the firmware: Chrome or Edge on Windows, macOS, Linux or ChromeOS (browser method), or PlatformIO (from source).</td></tr>
+  <tr><td><b>Internet</b></td><td>Through your Wi-Fi, to reach adsb.fi.</td></tr>
+</table>
+
+<h2 id="install">3. Installing the firmware</h2>
+<p>There are two ways. Most people should use the browser: nothing to install on your computer.</p>
+<h3>From a web browser (recommended)</h3>
+<ol class="steps">
+  <li>Download <b>skyscope-mini-1.0.0.bin</b> from the <a href="https://github.com/ricsne2010/skyscope-mini/releases/latest">latest release</a> (under <i>Assets</i>).</li>
+  <li>Plug the display into your computer with the USB-C cable.</li>
+  <li>Open <a href="https://espressif.github.io/esptool-js/">https://espressif.github.io/esptool-js/</a> in <b>Chrome</b> or <b>Edge</b>. Leave the baud rate at 921600 and press <b>Connect</b>. Pick the port that appears (often “USB JTAG/serial debug unit” or “USB Single Serial”).
+    <div class="note">No port listed? Hold the board's <b>BOOT</b> button, press and release <b>RST</b> (or unplug and replug the cable), then let go of BOOT and press Connect again. On Windows a driver install is occasionally needed for the CH340 chip some boards use.</div></li>
+  <li>Under <i>Flash Address</i> enter <code>0x0</code>, choose the <b>skyscope-mini-1.0.0.bin</b> file, and press <b>Program</b>. It takes about a minute.</li>
+  <li>When it says it's finished, press the board's <b>RST</b> button (or unplug and replug it). The Project Moon Pi start-up screen appears.</li>
+</ol>
+<p>Updating later is the same: program the newer file. Your Wi-Fi and settings are kept unless you choose <i>Erase Flash</i>.</p>
+<h3>From source with PlatformIO</h3>
+<p>For developers, or to change the code. Install <a href="https://platformio.org/install">PlatformIO</a> (the VS Code extension or the command line), then:</p>
+<pre><code>git clone https://github.com/ricsne2010/skyscope-mini.git
+cd skyscope-mini
+pio run -t upload          # builds and installs over USB
+pio device monitor         # optional: the board's log, 115200 baud</code></pre>
+<p>The first build downloads the ESP32 tools and libraries (LovyanGFX, WiFiManager, ArduinoJson) and takes a few minutes.</p>
+
+<h2 id="wifi">4. First start: joining Wi-Fi</h2>
+<ol class="steps">
+  <li>After the start-up screen, a new display shows <b>Wi-Fi setup</b> instructions.</li>
+  <li>On your phone or laptop, join the Wi-Fi network <code>SkyScope-Mini-Setup</code> (no password).</li>
+  <li>A setup page opens by itself (if it doesn't, browse to <code>http://192.168.4.1</code>). Choose <b>Configure WiFi</b>, pick your network and type its password.</li>
+  <li>Press <b>Save</b>. The display joins your network and starts. It remembers the network from then on.</li>
+</ol>
+<div class="note">To change networks later, or if the router changes, <b>hold the BOOT button for 3 seconds</b> while the Mini is running. It forgets the Wi-Fi and opens the setup network again.</div>
+
+
+<h2 id="setup">5. Setting your location</h2>
+<p>The Mini starts centred on Amsterdam, so the first thing to do is tell it where you are.</p>
+<ol class="steps">
+  <li>On a phone or computer on the same Wi-Fi, open <code>http://skyscope-mini.local</code>. (If that doesn't open, use the numeric address shown at the bottom right of the Mini's screen.)</li>
+  <li>Under <b>Location</b>, enter your latitude and longitude in decimal degrees, for example <code>51.4700</code> and <code>-0.4543</code>. To find them, long-press your home on Google Maps or Apple Maps and copy the numbers; west and south are negative.</li>
+  <li>Choose the distance unit and range, then press <b>Save</b>. The screen follows straight away and fetches aircraft for the new area.</li>
+</ol>
+<div class="note">Centring on an airport? Use the airport's position (its Wikipedia page lists it) and runways at major airports appear on the scope.</div>
+
+<h2 id="screen">6. Reading the screen</h2>
+<figure><img src="images/screen.png" alt="Mini screen centred on Phoenix Sky Harbor at 25 miles"><figcaption>Drawn by the Mini's code from live adsb.fi data: Phoenix Sky Harbor at 25 miles, colour by kind on, the runways with extended centrelines, the nearest aircraft on the card.</figcaption></figure>
+<table>
+  <tr><th>Part</th><th>Meaning</th></tr>
+  <tr><td>Rings</td><td>Distance from the centre, at round steps; each ring's distance is printed where it crosses the lower-right diagonal.</td></tr>
+  <tr><td>Symbols</td><td>Aircraft, pointing where they're heading, with a line showing about a minute of travel. Silhouettes show the kind: airliner, heavy, business jet, turboprop, light aircraft, glider, helicopter.</td></tr>
+  <tr><td>Colours</td><td>All red by default; with <i>Colour aircraft by kind</i>: airliners red, business jets orange, general aviation blue, helicopters purple, military khaki, others grey.</td></tr>
+  <tr><td>Tags</td><td>Callsign, type and altitude. When it's busy, tags that would overlap are left out (nearest aircraft first).</td></tr>
+  <tr><td>Yellow circle</td><td>The nearest aircraft, shown on the card at the right. A tapped aircraft gets a cyan circle and takes over the card.</td></tr>
+  <tr><td>Flashing red, pulsing ring</td><td>An emergency squawk (7500, 7600, 7700) or emergency status. Always shown, whatever the filters.</td></tr>
+  <tr><td>Card</td><td>Callsign, kind, aircraft type and registration, altitude and climb or descent, distance, bearing, track and ground speed.</td></tr>
+  <tr><td>List</td><td>Callsign, type, altitude and distance, nearest first, emergencies on top. It lists exactly the aircraft on the scope.</td></tr>
+  <tr><td>Top right</td><td>UTC time (set from the internet).</td></tr>
+</table>
+<figure><img src="images/screen-nm.png" alt="Mini screen at 20 nautical miles"><figcaption>The same airspace at 20 nautical miles with colour by kind off.</figcaption></figure>
+
+<h2 id="touch">7. Touch controls</h2>
+<table>
+  <tr><th>Touch</th><th>Does</th></tr>
+  <tr><td>An aircraft</td><td>Selects it: cyan circle, and the card shows it until you tap it again, tap empty space, or it leaves the scope.</td></tr>
+  <tr><td><b>−</b> / <b>+</b> (bottom right)</td><td>Next shorter or longer range, wrapping around. Saved straight away.</td></tr>
+</table>
+<table>
+  <tr><th>Unit</th><th>Ranges (to the outer ring)</th></tr>
+  <tr><td>Kilometres</td><td>5, 10, 15, 25, 50, 100</td></tr>
+  <tr><td>Statute miles</td><td>2, 5, 10, 15, 25, 50</td></tr>
+  <tr><td>Nautical miles</td><td>2, 5, 10, 20, 40</td></tr>
+</table>
+
+<h2 id="page">8. The settings page</h2>
+<p>At <code>http://skyscope-mini.local</code> (or the numeric address on the screen). Changes apply when you press <b>Save</b> and are kept when the power is off.</p>
+<table>
+  <tr><th>Section</th><th>Settings</th></tr>
+  <tr><td><b>Location</b></td><td>Latitude and longitude of the centre.</td></tr>
+  <tr><td><b>Display</b></td><td>Distance unit and range; silhouettes or triangles; colour by kind; sweep; major-airport runways with extended centrelines; aircraft on the ground; emergency highlighting.</td></tr>
+  <tr><td><b>Filters</b></td><td>Which kinds to show (airliners, business jets, general aviation, helicopters, military, other) and which altitude blocks (10,000 ft and below; 10,001 ft to FL180; FL180 to FL600).</td></tr>
+  <tr><td><b>About</b></td><td>Version, the Mini's address, the project link and credits.</td></tr>
+</table>
+<p>The page has no password: anyone on your Wi-Fi can open it.</p>
+
+<h2 id="trouble">9. Troubleshooting</h2>
+<table>
+  <tr><th>What you see</th><th>What to do</th></tr>
+  <tr><td>“Waiting for data…” for a long time</td><td>Check the Wi-Fi has internet access. adsb.fi is a free community service and is occasionally slow or down; the Mini keeps trying.</td></tr>
+  <tr><td>“adsb.fi answered 429”</td><td>Too many requests from your network (for example several Minis or other apps). It recovers by itself.</td></tr>
+  <tr><td>No aircraft</td><td>Check the location (west and south are negative), the filters, and try a longer range.</td></tr>
+  <tr><td>No runways</td><td>Only major airports are included, and only within the range plus about 25 km.</td></tr>
+  <tr><td>Touch does nothing</td><td>Your board may have resistive touch, or a touch chip at a different address (see <code>include/board.h</code>). The settings page does everything touch does.</td></tr>
+  <tr><td>Screen stays black, but the board's light is on</td><td>Press RST. If still black, the backlight or panel wiring may differ on your board revision: open an issue with a photo of the board's back and its exact listing title.</td></tr>
+  <tr><td>Picture is shifted, flickers, or the colours are wrong (blue looks red)</td><td>Boards sold under this name have had small changes. The pin map is in <code>include/board.h</code>; compare it with your seller's documentation and rebuild from source, or open an issue.</td></tr>
+  <tr><td>“Not enough memory for the screen buffers”</td><td>The board has no PSRAM, so it is a different model. This firmware needs the 8 MB PSRAM version (ESP32-S3 N16R8).</td></tr>
+  <tr><td>Stuck on the Wi-Fi setup screen</td><td>Check the password, and that the network is 2.4 GHz. Join <code>SkyScope-Mini-Setup</code> again to retry.</td></tr>
+  <tr><td>Want to start over</td><td>Hold BOOT for 3 seconds (forgets Wi-Fi), or use <i>Erase Flash</i> in the web installer and program the file again (forgets everything).</td></tr>
+</table>
+
+<h2 id="source">10. Building from source and the desktop preview</h2>
+<p>The code is in C++ for the Arduino framework, built with PlatformIO. The parts: <code>src/mini.cpp</code> saves settings and fetches from adsb.fi on its own task; <code>src/mini_core.cpp</code> holds ranges, rings, aircraft classification and the JSON reading; <code>src/render.cpp</code> draws the screen; <code>src/scope.cpp</code> holds the shared scope drawing (rings, symbols, tags, sweep); <code>src/main.cpp</code> starts everything, handles touch and serves the settings page. The major-airport runway table in <code>src/data/</code> is built from OurAirports by <code>tools/build_large_airports.py</code>.</p>
+<p><code>include/shapes.h</code> holds the aircraft silhouettes and type lists. It is generated from SkyScope's own <code>symbols.py</code> by <code>tools/gen_shapes.py</code>, so all the SkyScope projects draw and classify aircraft the same way.</p>
+<h3>Desktop preview</h3>
+<p>The drawing code has no hardware calls in it, so it also builds on a computer: <code>tools/preview</code> draws one frame from saved data into an image, exactly as the board would draw it. The pictures in this guide were made that way. It needs a C++ compiler and the SDL2 development files (LovyanGFX uses them to pick its desktop mode):</p>
+<pre><code>pio run                    # once, to download the libraries
+tools/preview/build.sh     # SDL_INC=… SDL_LIB=… if SDL2 isn't installed system-wide</code></pre>
+<p>The comment at the top of <code>tools/preview/preview.cpp</code> shows its arguments.</p>
+
+
+<h2 id="credits">11. Credits and licence</h2>
+<p>SkyScope Mini comes full circle: SkyScope grew out of <a href="https://github.com/MatixYo/ESP32-Plane-Radar">ESP32-Plane-Radar</a> by MatixYo (MIT licence), a radar for a small round ESP32 display, and the Mini brings SkyScope back to an ESP32. The runway table comes from that project's airport data tool.</p>
+<table>
+  <tr><th>What</th><th>Source</th><th>Terms</th></tr>
+  <tr><td>Live aircraft</td><td>adsb.fi open data</td><td>adsb.fi terms (at most one request a second; the Mini uses one every five)</td></tr>
+    <tr><td>Airports and runways</td><td>OurAirports</td><td>Public domain</td></tr>
+  <tr><td>Graphics</td><td>LovyanGFX</td><td>FreeBSD licence</td></tr>
+  <tr><td>Wi-Fi setup</td><td>WiFiManager</td><td>MIT</td></tr>
+  <tr><td>JSON</td><td>ArduinoJson</td><td>MIT</td></tr>
+</table>
+<div class="warn"><b>Not for navigation.</b> Aircraft positions may be delayed, incomplete or wrong. ADS-B shows only aircraft that broadcast it. Never use this display for flight planning or navigation.</div>
+
+<p class="meta"><img src="images/moon-pi-logo-128.png" alt="" style="width:40px;height:40px;vertical-align:middle;margin-right:8px">SkyScope Mini is a Project Moon Pi project and free software under the MIT licence. Source: <a href="https://github.com/ricsne2010/skyscope-mini">github.com/ricsne2010/skyscope-mini</a>.</p>
+
+</main>
+</body>
+</html>

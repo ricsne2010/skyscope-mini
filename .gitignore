@@ -1,0 +1,5 @@
+.pio/
+tools/preview/build/
+.vscode/
+.DS_Store
+*.ppm
