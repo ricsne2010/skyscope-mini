@@ -21,7 +21,7 @@
 #include "mini.h"
 #include "render.h"
 
-#define SKYSCOPE_MINI_VERSION "1.1.1"
+#define SKYSCOPE_MINI_VERSION "1.1.2"
 
 namespace {
 
