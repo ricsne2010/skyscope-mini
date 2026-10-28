@@ -30,7 +30,7 @@ void init() {
   track = rgb(0xFF00FF);
   runway = rgb(0xA5B9CD);
   centerline = rgb(0x466E87);
-  runwayLabel = rgb(0x6ED2E6);
+  runwayLabel = rgb(0xC4CCDA);  // silver: apart from the tags' blue altitudes
   airspaceB = rgb(0x4673D2);
   airspaceC = rgb(0xA55FB9);
   sid = rgb(0x37B4B4);
