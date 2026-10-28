@@ -1,7 +1,7 @@
 // SkyScope Mini: a standalone ADS-B radar on a 4.3" ESP32-S3 display. A reduced
 // SkyScope: live aircraft from adsb.fi, silhouettes, sweep, filters, alerts and
 // major-airport runways, set up from its own web page.
-// Board: Sunton ESP32-8048S043 (ESP32-S3, 800x480). A Project Moon Pi project.
+// Board: Sunton ESP32-8048S043 (ESP32-S3, 800x480). Designed and Created by Project Moon Pi.
 
 #include <Arduino.h>
 #include <WebServer.h>
@@ -101,7 +101,7 @@ void handleRoot() {
                "button{margin-top:16px;padding:12px 26px;border:0;border-radius:8px;background:#46ff78;color:#040a1c;font-weight:700;font-size:1rem}"
                ".dim{color:#8a9abb}a{color:#46ff78}</style></head><body><main>"
                "<header><img src=/logo.jpg width=72 height=72 alt='Project Moon Pi'><div><h1>SkyScope Mini</h1>"
-               "<div class=dim>A Project Moon Pi project</div></div></header><form method=post action=/save>");
+               "<div class=dim>Designed and Created by Project Moon Pi</div></div></header><form method=post action=/save>");
   p += F("<section><h2>Location</h2><div class=row><label>Latitude<input name=lat type=number step=any value='");
   p += String(settings.lat, 5);
   p += F("'></label><label>Longitude<input name=lon type=number step=any value='");

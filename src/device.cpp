@@ -37,7 +37,7 @@ void showSplash(LGFX& lcd, const char* product, const char* subtitle) {
   lcd.setFont(&fonts::FreeSans9pt7b);
   lcd.setTextColor(scope::color::dim);
   lcd.drawString(subtitle, board::kWidth / 2, 408);
-  lcd.drawString("A Project Moon Pi project", board::kWidth / 2, 432);
+  lcd.drawString("Designed and Created by Project Moon Pi", board::kWidth / 2, 432);
 }
 
 void showMessage(LGFX& lcd, const char* title, const char* const lines[], int count) {

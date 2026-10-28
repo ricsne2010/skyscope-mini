@@ -3,7 +3,7 @@
 # SkyScope Mini
 
 **A small standalone aircraft radar on a 4.3″ ESP32-S3 display. No Raspberry Pi needed.**
-A Project Moon Pi project.
+**Designed and Created by Project Moon Pi**
 
 The Mini joins your Wi-Fi, fetches live aircraft from [adsb.fi](https://adsb.fi)'s
 open data every five seconds, and draws them on an ATC-style scope with a
@@ -107,5 +107,9 @@ MIT licence (see [LICENSE](LICENSE)). SkyScope grew out of
 [ESP32-Plane-Radar](https://github.com/MatixYo/ESP32-Plane-Radar) by MatixYo
 (MIT), and the runway table tool comes from it. Aircraft data:
 [adsb.fi](https://adsb.fi) open data. Airports: OurAirports (public domain).
-Libraries: LovyanGFX (FreeBSD), WiFiManager (MIT), ArduinoJson (MIT). The
-Project Moon Pi name and logo are not covered by the licence. Not for navigation.
+Libraries: LovyanGFX (FreeBSD), with its GNU FreeFont text (GPL with font
+exception); WiFiManager (MIT); ArduinoJson (MIT); the Espressif Arduino core
+(LGPL 2.1), built with PlatformIO (Apache 2.0). Built with
+[Claude Code](https://claude.com/claude-code) (Anthropic): designed, written and
+tested with Claude. The Project Moon Pi name and logo are not covered by the
+licence. Not for navigation.
